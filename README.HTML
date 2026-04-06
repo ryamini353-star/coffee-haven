@@ -1,45 +1,274 @@
-#Currency Converter💵 ➡️ 💴
-This project is a Currency Converter built using HTML, CSS, and JavaScript. It allows users to convert the currency of one country to another by utilizing an external API.
 
-## Project Demo
 
-Check out the live demo of the Currency Converter: [click here](https://siniekoo19.github.io/Currency-Converter/)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Haven | Premium Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #6F4E37; --accent: #D2691E; --dark: #1a100d; --bg: #fdfaf7; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg); color: var(--dark); scroll-behavior: smooth; }
 
-## Features
-- Convert currency values between different countries.
-- Fetch real-time exchange rates using an API.
-- Simple and user-friendly interface.
+        /* Navbar */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 8%; background: white; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--primary); cursor: pointer; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; list-style: none; gap: 25px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+        
+        .cart-box { font-size: 22px; cursor: pointer; color: var(--primary); position: relative; }
+        #cart-count { background: var(--accent); color: white; font-size: 11px; padding: 2px 7px; border-radius: 50%; position: absolute; top: -10px; right: -10px; }
 
-## API Reference
-```
-https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{fromcountry}.json
-```
+        /* Hero Section (Pehle Wala Design) */
+        .hero {
+            height: 75vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; text-align: center; color: white;
+        }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(35px, 6vw, 65px); line-height: 1.2; }
+        .hero span { color: #f39c12; }
+        .hero p { font-size: 18px; margin: 15px 0 25px; opacity: 0.9; }
+        .btn-hero { padding: 12px 35px; background: var(--accent); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: 0.3s; border: none; cursor: pointer; }
+        .btn-hero:hover { transform: scale(1.05); background: #b35919; }
 
-## Fetching Exchange Rates
-To fetch the exchange rates, the following code is used:
+        /* Containers */
+        .container { max-width: 1100px; margin: auto; padding: 60px 20px; }
+        .hidden { display: none !important; }
+        .section-title { text-align: center; margin-bottom: 40px; font-family: 'Playfair Display', serif; font-size: 36px; }
 
-```bash
-const BASE_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies";
-const url = `${BASE_URL}/${fromCurr.value.toLowerCase()}.json`;
+        /* Login Screen */
+        .auth-box { max-width: 400px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
 
-let response = await fetch(url);
-if (!response.ok) {
-    throw new Error('Network response was not ok');
-}
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
+        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; transition: 0.3s; position: relative; }
+        .card:hover { transform: translateY(-10px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
+        .badge { position: absolute; top: 30px; right: 30px; background: #e74c3c; color: white; padding: 4px 12px; font-size: 12px; border-radius: 20px; font-weight: bold; }
+        .price-tag { color: var(--primary); font-weight: 700; font-size: 22px; margin: 15px 0; }
+        .add-btn { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
 
-let data = await response.json();
-const exchangeRate = data[fromCurr.value.toLowerCase()][toCurr.value.toLowerCase()];
+        /* Payment & History */
+        .box-style { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .pay-methods { display: flex; gap: 10px; margin: 20px 0; }
+        .m-btn { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; }
+        .m-btn.active { border-color: var(--accent); background: #fff4ed; color: var(--accent); }
+        
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 15px; overflow: hidden; }
+        .history-table th, .history-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .history-table th { background: var(--primary); color: white; }
 
-```
-## 🚀 About Me
-👋 Hi there! I'm Sinchana Chatterjee, an enthusiastic and determined B.Tech student with a fervent aspiration to excel as a Web Developer.
+        footer { text-align: center; padding: 50px; background: var(--dark); color: white; margin-top: 50px; }
+    </style>
+</head>
+<body>
 
-## Authors
-[@siniekoo19](https://github.com/siniekoo19)
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.reload()">Coffee<span>Haven</span></div>
+        <ul class="nav-links">
+            <li><a onclick="showScreen('home-screen')">Home</a></li>
+            <li><a onclick="checkLogin('menu-screen')">Menu</a></li>
+            <li><a onclick="checkLogin('history-screen')">My Orders</a></li>
+            <li class="cart-box" onclick="checkLogin('payment-screen')">
+                <i class="fas fa-shopping-basket"></i>
+                <span id="cart-count">0</span>
+            </li>
+        </ul>
+    </nav>
 
-## Acknowledgments
-- Thanks to [githubs pages](https://siniekoo19.github.io/Simon-Says-Game/) for providing a platform to deploy my website.
-- Thanks to [githubs pages](siniekoo19.github.io/Currency-Converter/) for providing a platform to deploy my website.
-- Thanks to the open-source community for their invaluable contributions to the tools and libraries used in this project.
+    <div id="home-screen" class="screen">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Wake Up to <br> <span>Perfect Brewing</span></h1>
+                <p>Freshly roasted beans delivered from the farm to your cup.</p>
+                <button class="btn-hero" onclick="checkLogin('menu-screen')">Explore Menu</button>
+            </div>
+        </section>
+        
+        <div class="container">
+            <h2 class="section-title">Why Choose Us?</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                <div><i class="fas fa-leaf fa-3x" style="color:var(--accent)"></i><h3>Organic Beans</h3></div>
+                <div><i class="fas fa-shipping-fast fa-3x" style="color:var(--accent)"></i><h3>Fast Delivery</h3></div>
+                <div><i class="fas fa-mug-hot fa-3x" style="color:var(--accent)"></i><h3>Fresh Aroma</h3></div>
+            </div>
+        </div>
+    </div>
 
-## Feedback
+    <div id="login-screen" class="container hidden">
+        <div class="auth-box">
+            <i class="fas fa-user-lock fa-3x" style="color:var(--primary); margin-bottom: 15px;"></i>
+            <h2>Member Login</h2>
+            <p style="color:#666; font-size: 14px; margin-bottom: 10px;">Please login to place your order</p>
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" placeholder="Password">
+            <button class="add-btn" style="background:var(--accent)" onclick="doLogin()">Login & Start Ordering</button>
+        </div>
+    </div>
+
+    <div id="menu-screen" class="container hidden">
+        <h2 class="section-title">Our Best Sellers</h2>
+        <div class="menu-grid" id="menu-data"></div>
+    </div>
+
+    <div id="payment-screen" class="container hidden">
+        <h2 class="section-title">Secure Checkout</h2>
+        <div class="box-style" style="max-width: 600px; margin: auto;">
+            <div id="checkout-info" style="margin-bottom: 20px; font-size: 18px;"></div>
+            
+            <h4>Select Payment Method:</h4>
+            <div class="pay-methods">
+                <div class="m-btn active" onclick="setPay('Card', this)">Card</div>
+                <div class="m-btn" onclick="setPay('UPI', this)">Online UPI</div>
+                <div class="m-btn" onclick="setPay('COD', this)">Cash on Delivery</div>
+            </div>
+
+            <div id="card-fields">
+                <input type="text" placeholder="Card Number (0000 0000 0000)">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" placeholder="MM/YY" style="width:50%">
+                    <input type="text" placeholder="CVV" style="width:50%">
+                </div>
+            </div>
+
+            <button class="add-btn" style="background:var(--accent); margin-top:20px;" onclick="finishOrder()">Confirm Order</button>
+        </div>
+    </div>
+
+    <div id="history-screen" class="container hidden">
+        <h2 class="section-title">Your Order History</h2>
+        <div id="history-content">
+            <p style="text-align: center; color: #999;">No orders found yet.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 20px;">
+            <i class="fab fa-instagram fa-2x" style="margin: 0 15px; cursor: pointer;"></i>
+            <i class="fab fa-facebook fa-2x" style="margin: 0 15px; cursor: pointer;"></i>
+        </div>
+        <p>&copy; 2026 Coffee Haven. Brewed with ❤️</p>
+    </footer>
+
+    <script>
+        let cart = [];
+        let history = [];
+        let userLoggedIn = false;
+        let selectedMethod = 'Card';
+
+        const coffees = [
+            { id: 1, name: 'Caramel Macchiato', price: 280, img: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400', best: true },
+            { id: 2, name: 'Dark Espresso', price: 190, img: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400', best: false },
+            { id: 3, name: 'Iced Hazelnut', price: 320, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400', best: true },
+            { id: 4, name: 'Classic Cappuccino', price: 250, img: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400', best: false },
+            { id: 5, name: 'Mocha Fudge', price: 340, img: 'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=400', best: false },
+            { id: 6, name: 'Cold Brew', price: 210, img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', best: false },
+            { id: 7, name: 'French Vanilla', price: 290, img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400', best: false },
+            { id: 8, name: 'Choco Muffin', price: 150, img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400', best: false }
+        ];
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen, .container').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function checkLogin(targetScreen) {
+            if(!userLoggedIn) {
+                showScreen('login-screen');
+            } else {
+                showScreen(targetScreen);
+                if(targetScreen === 'menu-screen') renderMenu();
+                if(targetScreen === 'payment-screen') updateCheckout();
+            }
+        }
+
+        function doLogin() {
+            let email = document.getElementById('email').value;
+            if(email) {
+                userLoggedIn = true;
+                alert("Login Successful! Now you can order.");
+                checkLogin('menu-screen');
+            } else { alert("Please enter email"); }
+        }
+
+        function renderMenu() {
+            const m = document.getElementById('menu-data');
+            m.innerHTML = '';
+            coffees.forEach(c => {
+                m.innerHTML += `
+                    <div class="card">
+                        ${c.best ? '<span class="badge">Bestseller</span>' : ''}
+                        <img src="${c.img}">
+                        <h3>${c.name}</h3>
+                        <div class="price-tag">₹${c.price}</div>
+                        <button class="add-btn" onclick="addToCart(${c.id})">Add to Cart</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const item = coffees.find(c => c.id === id);
+            cart.push(item);
+            document.getElementById('cart-count').innerText = cart.length;
+            alert(item.name + " added!");
+        }
+
+        function updateCheckout() {
+            let total = cart.reduce((s, i) => s + i.price, 0);
+            document.getElementById('checkout-info').innerHTML = `
+                <p>Items in Cart: <b>${cart.length}</b></p>
+                <p>Grand Total: <b style="color:var(--accent)">₹${total}</b></p>
+            `;
+        }
+
+        function setPay(m, btn) {
+            selectedMethod = m;
+            document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('card-fields').style.display = (m === 'Card') ? 'block' : 'none';
+        }
+
+        function finishOrder() {
+            if(cart.length === 0) return alert("Cart is empty!");
+            let total = cart.reduce((s, i) => s + i.price, 0);
+            let order = { id: "#ORD"+Math.floor(Math.random()*9000), date: new Date().toLocaleDateString(), price: total, method: selectedMethod };
+            history.push(order);
+            
+            cart = [];
+            document.getElementById('cart-count').innerText = 0;
+            renderHistory();
+            alert("Success! Order placed via " + selectedMethod);
+            showScreen('history-screen');
+        }
+
+        function renderHistory() {
+            const hc = document.getElementById('history-content');
+            if(history.length === 0) return;
+            
+            let html = `<table class="history-table">
+                <thead><tr><th>Order ID</th><th>Date</th><th>Method</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody>`;
+            history.forEach(h => {
+                html += `<tr><td>${h.id}</td><td>${h.date}</td><td>${h.method}</td><td>₹${h.price}</td><td style="color:green">On the way</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            hc.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
